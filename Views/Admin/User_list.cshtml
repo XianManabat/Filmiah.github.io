@@ -1,0 +1,306 @@
+﻿@model List<Final_web_app.Models.User>
+
+@{
+    ViewData["Title"] = "Users-list";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<h1>List of users</h1>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle"></i> @ViewBag.Error
+    </div>
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-users"></i> Registered Users
+            </h3>
+            <div class="card-tools">
+                <span class="badge badge-primary">Total: @Model.Count</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="usersTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="5%">#</th>
+                            <th width="20%">Username</th>
+                            <th width="25%">Email</th>
+                            <th width="15%">Phone</th>
+                            <th width="15%">Email Status</th>
+                            <th width="15%">Account Status</th>
+                            <th width="10%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int counter = 1;
+                        }
+                        @foreach (var user in Model)
+                        {
+                            <tr id="user-row-@user.Id">
+                                <td>@counter</td>
+                                <td>
+                                    <strong>@user.UserName</strong>
+                                </td>
+                                <td>@user.Email</td>
+                                <td>@(user.PhoneNumber ?? "Not provided")</td>
+                                <td>
+                                    @if (user.EmailConfirmed)
+                                    {
+                                        <span class="badge badge-success">
+                                            <i class="fas fa-check"></i> Confirmed
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-warning">
+                                            <i class="fas fa-clock"></i> Pending
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.LockoutEnd.HasValue && user.LockoutEnd > DateTimeOffset.Now)
+                                    {
+                                        <span class="badge badge-danger">
+                                            <i class="fas fa-lock"></i> Locked
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-success">
+                                            <i class="fas fa-check-circle"></i> Active
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-info" title="View Details" onclick="viewUser('@user.Id')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-warning" title="Edit User" onclick="editUser('@user.Id')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger" title="Delete User" onclick="deleteUser('@user.Id', '@user.UserName')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-sm-6">
+                    <small class="text-muted">
+                        Showing @Model.Count user(s)
+                    </small>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info text-center">
+        <h4><i class="icon fas fa-info"></i> No Users Found!</h4>
+        <p>There are currently no users registered in the system.</p>
+        <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+}
+
+<!-- Modal for viewing full user details -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user"></i> User Details
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="userDetails">
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success/Error Alert Template -->
+<div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function viewUser(id) {
+        // Show the modal first
+        $('#userModal').modal('show');
+
+        // Load user details via AJAX
+        $.ajax({
+            url: '@Url.Action("GetUserDetails", "Admin")',
+            type: 'GET',
+            data: { id: id },
+            success: function(response) {
+                if (response.success) {
+                    var lockoutStatus = '';
+                    if (response.data.lockoutEnd && new Date(response.data.lockoutEnd) > new Date()) {
+                        lockoutStatus = `<span class="badge badge-danger"><i class="fas fa-lock"></i> Locked until ${response.data.lockoutEnd}</span>`;
+                    } else {
+                        lockoutStatus = '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Active</span>';
+                    }
+
+                    var emailStatus = response.data.emailConfirmed
+                        ? '<span class="badge badge-success"><i class="fas fa-check"></i> Confirmed</span>'
+                        : '<span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span>';
+
+                    var details = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Username:</strong><br>
+                                <p class="mb-3">${response.data.userName}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Email:</strong><br>
+                                <p class="mb-3"><a href="mailto:${response.data.email}">${response.data.email}</a></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Phone Number:</strong><br>
+                                <p class="mb-3">${response.data.phoneNumber || 'Not provided'}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Registration Date:</strong><br>
+                                <p class="mb-3">${response.data.createdDate || 'Not available'}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Email Status:</strong><br>
+                                <p class="mb-3">${emailStatus}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Account Status:</strong><br>
+                                <p class="mb-3">${lockoutStatus}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Last Login:</strong><br>
+                                <p class="mb-3">${response.data.lastLogin || 'Never logged in'}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Failed Login Attempts:</strong><br>
+                                <p class="mb-3">${response.data.accessFailedCount || 0}</p>
+                            </div>
+                        </div>
+                    `;
+                    $('#userDetails').html(details);
+                } else {
+                    $('#userDetails').html('<div class="alert alert-danger">Error loading user details.</div>');
+                }
+            },
+            error: function() {
+                $('#userDetails').html('<div class="alert alert-danger">Failed to load user details.</div>');
+            }
+        });
+    }
+
+    function editUser(id) {
+        // Redirect to edit user page or implement inline editing
+        window.location.href = '@Url.Action("EditUser", "Admin")' + '?id=' + id;
+    }
+
+    function deleteUser(id, username) {
+        if (confirm('Are you sure you want to delete user "' + username + '"? This action cannot be undone and will permanently remove all user data.')) {
+            $.ajax({
+                url: '@Url.Action("DeleteUser", "Admin")',
+                type: 'POST',
+                data: { id: id },
+                success: function(response) {
+                    if (response.success) {
+                        // Remove the row from the table
+                        $('#user-row-' + id).fadeOut(500, function() {
+                            $(this).remove();
+
+                            // Update the counter
+                            updateRowNumbers();
+                            updateTotalCount();
+                        });
+
+                        showAlert('success', 'User "' + username + '" deleted successfully!');
+                    } else {
+                        showAlert('danger', response.message || 'Failed to delete user.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error details:', xhr.responseText);
+                    showAlert('danger', 'An error occurred while deleting the user: ' + error);
+                }
+            });
+        }
+    }
+
+    function updateRowNumbers() {
+        $('#usersTable tbody tr').each(function(index) {
+            $(this).find('td:first').text(index + 1);
+        });
+    }
+
+    function updateTotalCount() {
+        var currentCount = $('#usersTable tbody tr').length;
+        $('.badge-primary').text('Total: ' + currentCount);
+        $('.text-muted').text('Showing ' + currentCount + ' user(s)');
+
+        // If no users left, show the empty state
+        if (currentCount === 0) {
+            location.reload();
+        }
+    }
+
+    function showAlert(type, message) {
+        var alertHtml = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                ${message}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        `;
+
+        $('#alertContainer').html(alertHtml);
+
+        // Auto-hide after 5 seconds
+        setTimeout(function() {
+            $('#alertContainer .alert').fadeOut();
+        }, 5000);
+    }
+</script>

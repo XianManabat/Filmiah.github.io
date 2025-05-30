@@ -1,0 +1,81 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Storage";
+}
+
+<div class="container">
+    <h2>Image Storage</h2>
+    
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Upload New Image</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="UploadImage" asp-controller="Home" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label for="image" class="form-label">Select Image</label>
+                    <input type="file" name="image" id="image" class="form-control" accept="image/*" required />
+                    <div class="form-text">Supported formats: JPEG, PNG, GIF. Maximum size: 5MB.</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload Image</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Your Images</h5>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.Images != null && ((List<Final_web_app.Models.UserImage>)ViewBag.Images).Count > 0)
+            {
+                <div class="row">
+                    @foreach (var image in (List<Final_web_app.Models.UserImage>)ViewBag.Images)
+                    {
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <img src="@Url.Action("GetImage", "Home", new { id = image.Id })" 
+                                     class="card-img-top" alt="@image.ImageName" 
+                                     style="height: 200px; object-fit: cover;" />
+                                <div class="card-body">
+                                    <h6 class="card-title">@image.ImageName</h6>
+                                    <p class="card-text small text-muted">
+                                        Type: @image.ContentType<br/>
+                                        Size: @((image.ImageData.Length / 1024.0).ToString("F1")) KB
+                                    </p>
+                                    <form asp-action="DeleteImage" method="post" class="d-inline" 
+                                          onsubmit="return confirm('Are you sure you want to delete this image?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@image.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No images uploaded yet.</p>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,222 @@
+﻿@{
+    ViewData["Title"] = "Services";
+}
+
+ 
+
+<html>
+<head>
+
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Filmiah</title>
+
+    <link rel="stylesheet" href="~/css/Service.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <div class="background-container">
+        <img src="~/images/service_background.jpg" alt="background description" class="background_img">
+        <div class="text-overlay">
+            <h2 class="qwerty">Your Story, Our Vision: Capturing Memories That Last</h2>
+            <p>
+                Filmiah’s packages go beyond just photos and videos—they’re your gateway to
+                preserving life’s most cherished moments. Whether grand or intimate, we offer carefully
+                curated options to suit your storytelling journey. Explore our selections,
+                and let’s turn your unforgettable memories into a visual masterpiece!
+            </p>
+        </div>
+    </div>
+
+
+    <section class="services" id="Packages">
+        <div class="font-service">
+            <p class="section-title">Services offered :</p>
+            <p>
+                We offer a variety of photography and video services, tailored to fit your needs. Whether it’s
+                for a wedding, corporate event, or personal milestone, we have a package
+                designed just for you. Explore our services below and let us capture your moments
+                beautifully.
+            </p>
+        </div>
+    </section>
+
+    <hr>
+
+    @*========================Package 1========================*@
+    <h1 class="product-title">Pre debut</h1>
+    <div class="container">
+        <div class="product-box">
+            <div class="product"><img src="~/images/kylah.png" class="product-img"></div>
+            <div class="description">
+                <h2>Photo Package 1 – "Essential Moments"</h2>
+                <p>Perfect for quick sessions or personal shoots.</p>
+                <p><strong>Includes:</strong></p>
+                <ul>
+                    <li>1-hour photoshoot</li>
+                    <li>15 edited high-resolution photos</li>
+                    <li>1 outfit change</li>
+                    <li>Online gallery for easy viewing and download</li>
+                    <li>Delivery within 5 days</li>
+                </ul>
+            </div>
+            <a asp-controller="Account" asp-action="Portfolio_inquiry" target="_blank"><button class="inqr-btn">Book</button></a>
+        </div>
+
+        <div class="product-box">
+            <div class="product"><img src="~/images/kley.jpg" class="product-img"></div>
+            <div class="description">
+                <h2>Photo Package 2 – "Timeless Experience"</h2>
+                <p>A complete session for capturing deeper stories and creating lasting memories.</p>
+                <p><strong>Includes:</strong></p>
+                <ul>
+                    <li>2-hour photoshoot</li>
+                    <li>30 edited high-resolution photos</li>
+                    <li>up to 3 outfit change</li>
+                    <li>Online gallery for easy viewing and download</li>
+                    <li>Delivery within 3 days</li>
+                </ul>
+            </div>
+            <a asp-controller="Account" asp-action="Portfolio_inquiry" target="_blank"><button class="inqr-btn">Book</button></a>
+        </div>
+
+        <div class="product-box">
+            <div class="product"><img src="~/images/kazzy.jpg" class="product-img"></div>
+            <div class="description">
+                <h2>Photo Package 3 – "Elite Signature Shoot"</h2>
+                <p>The ultimate photography experience for those who want the best of everything.</p>
+                <p><strong>Includes:</strong></p>
+                <ul>
+                    <li>4-hour photoshoot</li>
+                    <li>50+ professionally edited high-resolution photos</li>
+                    <li>Unlimited outfit changes</li>
+                    <li>Multiple locations (up to 2 destinations)</li>
+                    <li>Personalized online gallery + premium photo album</li>
+                    <li>Delivery within 10 days with priority editing</li>
+                </ul>
+            </div>
+            <a asp-controller="Account" asp-action="Portfolio_inquiry" target="_blank"><button class="inqr-btn">Book</button></a>
+        </div>
+    </div>
+
+    @*========================Package 2========================*@
+    <h1 class="product-title">Self Portait</h1>
+    <div class="container">
+        <div class="product-box">
+            <div class="product"><img src="~/images/nagel.jpg" class="product-img"></div>
+            <div class="description">
+                <h2>Self Portrait Package 1 – "Personal Essence"</h2>
+                <p>Capture your true self with a creative and intimate self-portrait session.</p>
+                <p><strong>Includes:</strong></p>
+                <ul>
+                    <li>1-hour self-portrait session</li>
+                    <li>1 outfit change</li>
+                    <li>Personalized consultation to discuss your style and vision</li>
+                    <li>Online gallery for easy viewing and download</li>
+                    <li>Delivery within 5 days</li>
+                </ul>
+            </div>
+            <a asp-controller="Account" asp-action="Portfolio_inquiry" target="_blank"><button class="inqr-btn">Book</button></a>
+        </div>
+
+        <div class="product-box">
+            <div class="product"><img src="~/images/jayvee.jpg" class="product-img"></div>
+            <div class="description">
+                <h2>Self Portrait Package 2 – "Creative Expression"</h2>
+                <p>Unleash your creativity and capture stunning self-portraits with artistic flair.</p>
+                <p><strong>Includes:</strong></p>
+                <ul>
+                    <li>2-hour self-portrait session</li>
+                    <li>20 professionally edited high-resolution photos</li>
+                    <li>Up to 2 outfit changes</li>
+                    <li>Creative direction to help you express your unique style</li>
+                    <li>Personalized online gallery with password protection</li>
+                    <li>Delivery within 7 days</li>
+                </ul>
+            </div>
+            <a asp-controller="Account" asp-action="Portfolio_inquiry" target="_blank"><button class="inqr-btn">Book</button></a>
+        </div>
+
+        <div class="product-box">
+            <div class="product"><img src="~/images/jang.jpg" class="product-img"></div>
+            <div class="description">
+                <h2>Self Portrait Package 3 – "Ultimate Reflection"</h2>
+                <p>The most comprehensive self-portrait session designed to capture your essence and personality in every detail.</p>
+                <p><strong>Includes:</strong></p>
+                <ul>
+                    <li>3-hour self-portrait session</li>
+                    <li>40+ professionally edited high-resolution photos</li>
+                    <li>Unlimited outfit changes</li>
+                    <li>Custom-designed shoot based on your unique vision and personality</li>
+                    <li>Personalized styling and mood board consultation</li>
+                    <li>Premium online gallery with print options</li>
+                    <li>Delivery within 10 days with priority editing</li>
+                </ul>
+            </div>
+            <a asp-controller="Account" asp-action="Portfolio_inquiry" target="_blank"><button class="inqr-btn">Book</button></a>
+        </div>
+    </div>
+
+    @*========================Package 3========================*@
+    <h1 class="product-title">Product Photography</h1>
+    <div class="container">
+        <div class="product-box">
+            <div class="product"><img src="~/images/1.jpg" class="product-img"></div>
+            <div class="description">
+                <h2>Product Photography Package 1 – "Essentials Showcase"</h2>
+                <p>Perfect for small businesses or entrepreneurs looking to display their products in the best light.</p>
+                <p><strong>Includes:</strong></p>
+                <ul>
+                    <li>Up to 1 hour of product photography</li>
+                    <li>10 high-quality, professionally edited photos</li>
+                    <li>Studio-style lighting with a clean white background</li>
+                    <li>Product shots from multiple angles</li>
+                    <li>Online gallery for easy viewing and download</li>
+                    <li>Delivery within 5 days</li>
+                </ul>
+            </div>
+            <a asp-controller="Account" asp-action="Portfolio_inquiry" target="_blank"><button class="inqr-btn">Book</button></a>
+        </div>
+
+        <div class="product-box">
+            <div class="product"><img src="~/images/2.png" class="product-img"></div>
+            <div class="description">
+                <h2>Product Photography Package 2 – "Enhanced Display"</h2>
+                <p>Ideal for businesses that want to showcase their products with a touch of creativity and variety.</p>
+                <p><strong>Includes:</strong></p>
+                <ul>
+                    <li>Up to 2 hours of product photography</li>
+                    <li>20 high-quality, professionally edited photos</li>
+                    <li>Studio lighting plus creative backgrounds and props</li>
+                    <li>Multiple product angles, close-ups, and lifestyle shots</li>
+                    <li>Photo retouching to ensure color accuracy and detail enhancement</li>
+                    <li>Online gallery for easy viewing and download</li>
+                    <li>Delivery within 7 days</li>
+                </ul>
+            </div>
+            <a asp-controller="Account" asp-action="Portfolio_inquiry" target="_blank"><button class="inqr-btn">Book</button></a>
+        </div>
+
+        <div class="product-box">
+            <div class="product"><img src="~/images/3.JPG" class="product-img"></div>
+            <div class="description">
+                <h2>Product Photography Package 3 – "Premium Brand Showcase"</h2>
+                <p>The ultimate package for brands looking to create stunning visuals that stand out in the market.</p>
+                <p><strong>Includes:</strong></p>
+                <ul>
+                    <li>Up to 4 hours of product photography</li>
+                    <li>50+ high-quality, professionally edited photos</li>
+                    <li>Studio and on-location shoots with custom setups and props</li>
+                    <li>Creative direction for consistent branding and aesthetic</li>
+                    <li>Multiple angles, detailed close-ups, and dynamic lifestyle shots</li>
+                    <li>Advanced photo retouching and color correction</li>
+                    <li>Exclusive online gallery with high-resolution downloads</li>
+                    <li>Delivery within 10 days with priority editing</li>
+                </ul>
+            </div>
+            <a asp-controller="Account" asp-action="Portfolio_inquiry" target="_blank"><button class="inqr-btn">Book</button></a>
+        </div>
+    </div>
+</body>
+</html>

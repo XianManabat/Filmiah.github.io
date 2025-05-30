@@ -1,0 +1,80 @@
+﻿@{
+	ViewData["Title"] = "Admin-Dashboard";
+	Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+<html>  
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ViewData["Title"] - Filmiah_Admin</title>
+
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <div class="container mt-5">
+  
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h1 class="display-4 mb-3">Admin Dashboard</h1>
+                <p class="lead text-muted">Welcome to the administration panel</p>
+                <hr class="my-4">
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="row">
+                    <!-- Users Button -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-lg h-100 hover-card">
+                            <div class="card-body text-center py-5">
+                                <div class="mb-4">
+                                    <i class="fas fa-users fa-4x text-primary"></i>
+                                </div>
+                                <h3 class="card-title mb-3">Manage Users</h3>
+                                <p class="card-text text-muted mb-4">
+                                    View, edit, and manage all registered users in the system
+                                </p>
+                                <a asp-controller="Admin" asp-action="User_list"class="btn btn-primary btn-lg px-4">
+                                    <i class="fas fa-users me-2"></i>View Users
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inquiries Button -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-lg h-100 hover-card">
+                            <div class="card-body text-center py-5">
+                                <div class="mb-4">
+                                    <i class="fas fa-envelope fa-4x text-success"></i>
+                                </div>
+                                <h3 class="card-title mb-3">View Inquiries</h3>
+                                <p class="card-text text-muted mb-4">
+                                    Review and respond to customer inquiries and messages
+                                </p>
+                                <a asp-controller ="Admin" asp-action="Inquiry_list"  class="btn btn-success btn-lg px-4">
+                                    <i class="fas fa-envelope me-2"></i>View Inquiries
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Section -->
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <hr class="my-4">
+                <a href="/Admin/Logout" class="btn btn-outline-danger">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>

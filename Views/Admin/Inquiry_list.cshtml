@@ -1,0 +1,274 @@
+﻿@model List<Final_web_app.Models.ContactMessage>
+
+@{
+    ViewData["Title"] = "Inquiries List";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<h1>List of Inquiries</h1>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle"></i> @ViewBag.Error
+    </div>
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-envelope"></i> Contact Messages
+            </h3>
+            <div class="card-tools">
+                <span class="badge badge-primary">Total: @Model.Count</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="5%">#</th>
+                            <th width="15%">Name</th>
+                            <th width="20%">Email</th>
+                            <th width="15%">Phone</th>
+                            <th width="25%">Message</th>
+                            <th width="15%">Date</th>
+                            <th width="10%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int counter = 1;
+                        }
+                        @foreach (var inquiry in Model)
+                        {
+                            <tr id="inquiry-row-@inquiry.Id">
+                                <td>@counter</td>
+                                <td>
+                                    <strong>@inquiry.Name</strong>
+                                </td>
+                                <td>@inquiry.Email</td>
+                                <td>@(inquiry.Phone ?? "Not provided")</td>
+                                <td>
+                                    @if (inquiry.Message.Length > 50)
+                                    {
+                                        <span title="@inquiry.Message">@inquiry.Message.Substring(0, 50)...</span>
+                                    }
+                                    else
+                                    {
+                                        @inquiry.Message
+                                    }
+                                </td>
+                                <td>
+                                    <small>@inquiry.CreatedDate.ToString("MMM dd, yyyy")<br />@inquiry.CreatedDate.ToString("hh:mm tt")</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-info" title="View Details" onclick="viewInquiry(@inquiry.Id)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-success" title="Reply" onclick="replyInquiry('@inquiry.Email', '@inquiry.Name')">
+                                            <i class="fas fa-reply"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger" title="Delete" onclick="deleteInquiry(@inquiry.Id)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-sm-6">
+                    <small class="text-muted">
+                        Showing @Model.Count inquiry(ies)
+                    </small>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info text-center">
+        <h4><i class="icon fas fa-info"></i> No Inquiries Found!</h4>
+        <p>There are currently no inquiries in the system.</p>
+        <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+}
+
+<!-- Modal for viewing full inquiry details -->
+<div class="modal fade" id="inquiryModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-envelope-open"></i> Inquiry Details
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="inquiryDetails">
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success/Error Alert Template -->
+<div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function viewInquiry(id) {
+        // Show the modal first
+        $('#inquiryModal').modal('show');
+
+        // Load inquiry details via AJAX
+        $.ajax({
+            url: '@Url.Action("GetInquiryDetails", "Admin")',
+            type: 'GET',
+            data: { id: id },
+            success: function(response) {
+                if (response.success) {
+                    var details = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Name:</strong><br>
+                                <p class="mb-3">${response.data.name}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Email:</strong><br>
+                                <p class="mb-3"><a href="mailto:${response.data.email}">${response.data.email}</a></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Phone:</strong><br>
+                                <p class="mb-3">${response.data.phone || 'Not provided'}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Date Received:</strong><br>
+                                <p class="mb-3">${response.data.createdDate}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <strong>Message:</strong><br>
+                                <div class="border p-3 bg-light rounded">
+                                    ${response.data.message.replace(/\n/g, '<br>')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    $('#inquiryDetails').html(details);
+                } else {
+                    $('#inquiryDetails').html('<div class="alert alert-danger">Error loading inquiry details.</div>');
+                }
+            },
+            error: function() {
+                $('#inquiryDetails').html('<div class="alert alert-danger">Failed to load inquiry details.</div>');
+            }
+        });
+    }
+
+    function replyInquiry(email, name) {
+        // Open default email client with pre-filled recipient
+        var subject = encodeURIComponent('Re: Your Inquiry');
+        var body = encodeURIComponent('Dear ' + name + ',\n\nThank you for contacting us.\n\nBest regards,\nAdmin Team');
+        window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
+    }
+
+    function deleteInquiry(id) {
+        if (confirm('Are you sure you want to delete this inquiry? This action cannot be undone.')) {
+            $.ajax({
+                url: '@Url.Action("DeleteInquiry", "Admin")',
+                type: 'POST',
+                data: { id: id },
+                success: function(response) {
+                    if (response.success) {
+                        // Remove the row from the table
+                        $('#inquiry-row-' + id).fadeOut(500, function() {
+                            $(this).remove();
+
+                            // Update the counter
+                            updateRowNumbers();
+                            updateTotalCount();
+                        });
+
+                        showAlert('success', 'Inquiry deleted successfully!');
+                    } else {
+                        showAlert('danger', response.message || 'Failed to delete inquiry.');
+                    }
+                },
+                error: function() {
+                    showAlert('danger', 'An error occurred while deleting the inquiry.');
+                }
+            });
+        }
+    }
+
+    function updateRowNumbers() {
+        $('#inquiryTable tbody tr').each(function(index) {
+            $(this).find('td:first').text(index + 1);
+        });
+    }
+
+    function updateTotalCount() {
+        var currentCount = $('#inquiryTable tbody tr').length;
+        $('.badge-primary').text('Total: ' + currentCount);
+        $('.text-muted').text('Showing ' + currentCount + ' inquiry(ies)');
+
+        // If no inquiries left, show the empty state
+        if (currentCount === 0) {
+            location.reload();
+        }
+    }
+
+    function showAlert(type, message) {
+        var alertHtml = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                ${message}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        `;
+
+        $('#alertContainer').html(alertHtml);
+
+        // Auto-hide after 5 seconds
+        setTimeout(function() {
+            $('#alertContainer .alert').fadeOut();
+        }, 5000);
+    }
+
+    // Add table ID for easier manipulation
+    $(document).ready(function() {
+        $('table').attr('id', 'inquiryTable');
+    });
+</script>

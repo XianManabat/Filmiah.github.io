@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+
+    <div class="nav-header">
+        <header>
+
+            <span class="Brandname">Filmiah</span>
+            <div class="links">
+
+                <nav class="nav_links" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <a asp-controller="Home" asp-action="Index" class="main">Home</a>
+                    <a asp-controller="Account" asp-action="Portfolio_inquiry" class="nav-item">Portfolio</a>
+                    <a asp-controller="Home" asp-action="Services" class="nav-item">Services</a>
+                    <a asp-controller="Admin" asp-action="Dashboard" class="nav-item">ADMIN</a>
+                    <span></span>
+                </nav>
+
+            </div>
+
+
+            <!--burger menu code -->
+            <input type="checkbox" id="burger-menu">
+            <label for="burger-menu" class="menu-button">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </label>
+
+            <nav class="dropdown-menu">
+
+                <a href="main_page.html" class="secondary">Home</a>
+                <a href="https://www.facebook.com/profile.php?id=100069805509083" target="_blank" class="secondary">Visit our FB Page</a>
+                <a href="portfolio_page.html#MoreAboutUs" class="secondary">About us</a>
+                <a href="portfolio_page.html" class="secondary"> Inquiry</a>
+                <a href="service_page.html#Packages" class="secondary">Photography Packages</a>
+                <partial name="LoginPartial" />
+            </nav>
+
+
+
+        </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - Final_web_app - <a asp-area="" asp-controller="Home" asp-action="Portfolio">More about us</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
